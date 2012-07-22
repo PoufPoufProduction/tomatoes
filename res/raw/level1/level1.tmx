@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="15" height="320" tilewidth="32" tileheight="32">
+ <tileset firstgid="1" name="johannC" tilewidth="32" tileheight="32">
+  <image source="tileset01.png" width="640" height="640"/>
+ </tileset>
+ <tileset firstgid="401" name="ext01" tilewidth="32" tileheight="32">
+  <image source="farming_fishing.png" width="640" height="640"/>
+ </tileset>
+ <tileset firstgid="801" name="ext02" tilewidth="32" tileheight="32">
+  <image source="plants.png" width="288" height="384"/>
+ </tileset>
+ <tileset firstgid="909" name="ext03" tilewidth="32" tileheight="32">
+  <image source="fence.png" width="96" height="192"/>
+ </tileset>
+ <tileset firstgid="927" name="ext04" tilewidth="32" tileheight="32">
+  <image source="wheat.png" width="96" height="192"/>
+ </tileset>
+ <tileset firstgid="945" name="ext05" tilewidth="32" tileheight="32">
+  <image source="reed.png" width="96" height="320"/>
+ </tileset>
+ <layer name="Calque 1" width="15" height="320">
+  <data encoding="base64" compression="zlib">
+   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
+  </data>
+ </layer>
+ <layer name="Calque 2" width="15" height="320">
+  <data encoding="base64" compression="zlib">
+   eJztWlmMFUUU7faBaERlTNBhJvFHIIFBiF8agwxrcB1ERuSLGUAZGP1QGVCMYkzUIaiY+ItxF0UwEVwR/XIXP/DLBX6MiQb3YGLUxOVW3r159913q7uq+i28TJ3kTPW9fU9Vda09/SpJIiIiIiIi3DAF2IXsVu53WXgRcLagjJH3T2YuUXyLPfNYiLTZWjxdExYAFwHHIxcoujnA0/DeQhZLPBU4AWOktlvESB2lUxTtIsyTqOUx3tJ2E5RyeT2JFyplyueajJR5kHYJK5PynZxD+ax58Tadi9Y2HhpRFunk+C7yfD56ykOOh0a2b73qXkSft1a0Uu/bd3z81KPt8qCtebQWuEDT+8Dob02T5La0UuYoXA8wjqYVH79eA7wf+ABwLfrbCbfUob4DaXV7DVryXJ1Wx2ptNWLR3u5Qz6gtpjVjod7l8nFhrrdbtA8q86sIfsD0e2F/J+zjQmfsf/Ca0n8x/dviP87sDqy3SR9i9lnC1u7/kYTzNazDAeCrnvbHSbkuHwI/8rSfAD4JfArz87FD6kp2SF3JDqkr2WO5nRNP+/w0nGMN2ruF9Mm11LaHhmJcgZhOB31n4L0s5JWZdT+vTLqv5eHa7KHP1QzQO68N/P2Xjzn5zivf/wbaeP5eD3Vfibwh4zl43EqM2wjpMPLmDC2PG8a4eyDdhrw3Q8vjtjWpnT8Bfoo8DPzMQ/O78J9w0EkNx2GlHraysnAiQNOO2Al8A/km8FEP7XPCfsRD+wzwbrzeCnzWQ0v6uwJ0EbWgMeDT96R5C+3XPfS87w18+5/rn/bQcX0cOxEREa3E+gJsFPLe+Vente/9tnd+zkHHb4caRgpqtxbQhsJo17XoeU9Gbda4Mlr5fXczcIsyruQ3D9v34kbhIPBQoPYb4Ld1qEMXPHO3eG45L7VvRCadDZwjtK59vriA1qfca9Dfl5avVzWp3Hpqte8Drlrt+4Cm1eaU9n2A5lbWb5Lt9rtkPfBnUv1N+S+PuDNEe51uaT8trlXaiWn1b0JnWrSuca6I7axrYzs3tp1prw5p53rt1RpMvd5GHmK+vPcKE/858B3gu8AjzJeIvGTehCMsPhF+npe0Q7GzFM6IsYnnoe93I18o1fp2Z4yNF+HeHuRLpVrfnqhtuXYv3NuHfLlU69tXcO6PtXMFRc4FRbjjsQJsF5wNnISpwSyHOUGaC4BTMTXnkh7O0U1nmouBl2BK55LOAe5gea2AuvSz+pDmKuDVmNK5JKPhZ5yGQLchrdSJNAPAQUzpXJLR8DNO8uwUabiea/gZJ57PJKwz18/N0HDfVKXO17L7fcBlSe15K2oj0qwFrgPeCDwKXCN8FM/b6GvgZuAW4B3AO4G/Ct80Fs/b6BeM/S2poAT9MC4t97/BDhY/jcWdklZiTV2PAc9LK+feTF/KviGcm5ZjO9Pq8rPOvRE6gNtF+Zcm2efeOB4X5feJeF7mdKF9Bbif2bxvsso06BX7Ju+vDiV+I3DYQg08/j5LjE3jGh+qSSya94DvAz/wzMvgC+CXwK+EfwZwJrLHov0R+BPwZ6FZ4VDuf+YPjJsUuBQuL8uJnwlxPZZ1enmOdh7oegO1NmwC3pSUf6fqDcwjYXkYDnlqJwrb1j4usLVPo7C0ucWpuLzVFWgizBymuTzLIX4Gxsq5f11GPqRxmf/9QueiIcxn13nrRla5Zu75zN1+Ybvq5wE3KH4X/XyL/wrUDyX6umErMwtGs95TR+W7auaK/XtZzv/BfG/rYbEue53c22i+y71Og9zbCNLWwPc2DmnnYdTi36T4rhS6XXi93PM7wy7FN5JU9nZaR/g1rRN8PaC2dp3bcl3xXRN4PiG6iIiIiHbD/8bdXHo=
+  </data>
+ </layer>
+ <layer name="Calque 5" width="15" height="320">
+  <data encoding="base64" compression="zlib">
+   eJztm8lPFEEUxhnGkxoQNeqJQBT3s3pSbip4UUhM8OIGw8HoQdz/ARdiYowHI5smbiyJCnpUcGHzpuBB76Ie9O6S+FWoisWjuruqumfGgfdLvlS9qnpVr2uqp6d7qutSRUX1kOAydAVqhTIoa5blgidQPzTwr2hGmw6oE+oqms0wNAKNGuqC+lZchC7J/EfoE4mT9q3XtUHtsvw79MMQZ512/HrdI+ixbFOM+nRqdpz68QcdwwrUr0yFz0HU/LxMT6eDSIfSbvYbmX+F9LWjPSrzw0hHHO23Mj+GdNzR9jlOZfscp7J9jlPZPsep24XG1bS/BHeR3iO6b1EneID8Q6LudHQd++bOtwf5XqK+dHRdHILWWxvUDnWQPF2TzP/NRqnNlu03yPabtLJ9Wj+0L719nUX/9Vp+r2VMgu1QszamzVjCJyP9VJy2fq5jUT+By/GpOVZz2wjtcPAX6HPr6l9PbNfY9TURd2wXfzq28s9Y9mHyd4lBPzf0flzmT1Dt6UvXnB53U4gyxE/3b3IYn2EYJt+0ylR/lmFrd8k8fc5hY8fBJ1bdzgdx5jlfFOI8f5XpN2IrvpByvf0fmVfpb5lOEZu2E2mZfDZnSssi6k1MQFXQWkOdqazE3A2jsaXY37cmhi/jxucIWy9T57M6R38G2Dqq7BdJS+S5WJqaaevQNqUB5y9jx66I+pqcRBHOyYT7uxNjzTyL4TteQGu1F+rz9B2Ehjx9F3r6McnRDfV4+j6HXnj6voPee/oKWmL4MgzDMLnlg0wnSaozSdqaWGwx1qKQuqmQOgqN1XQPYhOzYsJhbF9oPL7zzEyzM4E+xPOl3RFtTPfelKC1a7r3pgTdP5vuveOwwFBmu+5XyXQpJB4DHXOMrcqtuTM2n5GC3k/bfEZBJP0ZMQzDMDNpgA54+h6HTiQYS9DvjqjfEZQKXDvKpQSV2rWkktSJa5bKlwdccyoirkVR9dlG7f28EWP/5zX29fK9HrBX17RXnPq6xuDjq8a/FWPcoBjYN3u+N0P2fvN+7+xwCDdgh6Ej0FGoEWqCMhb/z59Cm9PQGegsdA46D12I+d9+nH0yPnunlE3fA3Ox6XtgrrZAf5/NFfrOnysNludVKbTEc4zV0BpP363QtpB6tQZM1EJ7LMepTuh3TW0y3eSFZcTe7/Cdu47YB+fw97WYp+WevmKe1s+RGBiGYQqBfO0Vmy/7zBimEOjEOdUF3fY4t/rhMwA9zbHvCHxGoTH+PmAYZp7zF8rakIk=
+  </data>
+ </layer>
+ <layer name="Calque 4" width="15" height="320">
+  <data encoding="base64" compression="zlib">
+   eJzt2s0uA1EcBfA77ZbwCIR3INiTNHgE8QCtZ2htEBsJOx+1kGDVasuGBfrdDSuEN8AzcJrcSZqb27m9t18jzi85Jsb/tFc76ZiWEERERDRInjfsFRARERERERERERERERGF04knRFrm1PJztRzm8zIFQzcTESKLXCG5iF23iPkSUkYqll1VBfNVmVoIP0eMyzUllK1uZkP5WVJ+n1K2upnNHv7u/jriAbcZbzPjryMZ0E12MGMroaxHt/Z2z0FKWY9uXUHPQdhtIduO3UPkyLGbQbKO3bC7xXFw53gsPKH3/AePI50RvH6PRty6E+hNOnbJzSNSREoOcy/IK/Jm6OrmPpEv5NvQ1c39NL945v8T6nRuEPg4DwYfZ6Lu3EeFeIi6dYvolRy7FfSq7Pa9W0ev4dglov6L4TpoUdm3j/P+QQfn/jXlGuoSnXPkwvLvhiW7cRqCMWTcsTuFTCv7duR219CdQWaVfcdymzZ0Y5p9fidv6Dbvcw6Zb9nX2lkIuJ1lZAVZNdyHzrpDx/eOfHTRp97Z6+La6eyfX3flcV4pINfIjeX7dFXM15A60uB7fERERERERKHxC5P0gAI=
+  </data>
+ </layer>
+ <layer name="Calque 3" width="15" height="320">
+  <data encoding="base64" compression="zlib">
+   eJzt2+lNwzAYxnEn8B0kzu8gARNwtCtwjAUtI3CNACkb0IMNODfg3ACeCCyF4NrErTjE/yc9lRvnTdw6kT/ZGACDaiq7SiOifagcKQcR7ZZyqmQR7Z5yrnQj2sBvcK3cKLcRtY/Kk/IcUZsmxowoo0n1cUyrZkaZTYY/jirK4wAAAAAAAAAAAAAAAAAAAAAAAPhJY8p4ZM2cMv9+zO7bshqOY6ZQs6ys9Ll+cS+XvZ+16jg/P7am1Erjs/fzWS+0t8zH3xQSs7fGitnT0o/rf7bK+2/6zYtLef+NnZfQNbaVncJ3Ozd183luy/aU/cL3DWXTvM1N9oUxA8NyprSVjqNvIjFm0rM/7EK5VK4cfQuqW/TU3in3yoOjr6a6uqf2Jf9Qf8LeNXhMDfB8LP2DZyv0fvuE3m+f0PsN5HxrU4hvbQrxrU0h37k2HafGnCiZ0kqr1bZ1fkfpKr2KtQDw170CpYhnag==
+  </data>
+ </layer>
+</map>
