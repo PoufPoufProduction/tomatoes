@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
-
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
@@ -13,11 +12,11 @@
    height="640"
    id="svg2393"
    sodipodi:version="0.32"
-   inkscape:version="0.48.3.1 r9886"
+   inkscape:version="0.46"
    version="1.0"
    sodipodi:docname="credits.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
-   inkscape:export-filename="/home/johann/Workspace/apps/tomatoes/res/img/credits.png"
+   inkscape:export-filename="/home/jcharlot/workspace/apps/tomatoes/res/img/credits.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
   <defs
@@ -53,14 +52,14 @@
      inkscape:pageshadow="2"
      inkscape:zoom="1.1760749"
      inkscape:cx="108.24084"
-     inkscape:cy="300.10088"
+     inkscape:cy="402.1352"
      inkscape:current-layer="layer1"
      inkscape:document-units="px"
      showgrid="false"
      inkscape:window-width="1087"
      inkscape:window-height="912"
      inkscape:window-x="120"
-     inkscape:window-y="38"
+     inkscape:window-y="35"
      inkscape:window-maximized="0" />
   <metadata
      id="metadata2398">
@@ -70,7 +69,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -87,46 +86,63 @@
        y="0" />
     <text
        xml:space="preserve"
-       style="font-size:21.69905853px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Arial Black;-inkscape-font-specification:Arial Black"
-       x="21.943262"
-       y="45.298374"
-       id="text2405"><tspan
+       style="font-size:20.20492363px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Arial Black;-inkscape-font-specification:Arial Black"
+       x="20.432312"
+       y="46.429993"
+       id="text2405"
+       transform="scale(1.0739491,0.9311428)"><tspan
          sodipodi:role="line"
          id="tspan2407"
-         x="21.943262"
-         y="45.298374">Programming:</tspan><tspan
+         x="20.432312"
+         y="46.429993">Programming:</tspan><tspan
          sodipodi:role="line"
-         x="21.943262"
-         y="72.422195"
+         x="20.432312"
+         y="71.686142"
          id="tspan2409">  . Johann C</tspan><tspan
          sodipodi:role="line"
-         x="21.943262"
-         y="99.546021"
+         x="20.432312"
+         y="96.942299"
          id="tspan2411" /><tspan
          sodipodi:role="line"
-         x="21.943262"
-         y="126.66985"
+         x="20.432312"
+         y="122.19846"
          id="tspan2413">Graphism:</tspan><tspan
          sodipodi:role="line"
-         x="21.943262"
-         y="153.79367"
+         x="20.432312"
+         y="147.45461"
          id="tspan2415">  . Johann C</tspan><tspan
          sodipodi:role="line"
-         x="21.943262"
-         y="180.9175"
-         id="tspan3094">  . TODO</tspan><tspan
+         x="20.432312"
+         y="172.71077"
+         id="tspan3094">  . Daneeklu</tspan><tspan
          sodipodi:role="line"
-         x="21.943262"
-         y="208.04132"
+         x="20.432312"
+         y="197.96692"
          id="tspan2417" /><tspan
          sodipodi:role="line"
-         x="21.943262"
-         y="235.16513"
+         x="20.432312"
+         y="223.22307"
          id="tspan2419">Music:</tspan><tspan
          sodipodi:role="line"
-         x="21.943262"
-         y="262.28897"
-         id="tspan3102">  . TODO</tspan></text>
+         x="20.432312"
+         y="248.47923"
+         id="tspan3102">  . Alexandr Zhelanov</tspan><tspan
+         sodipodi:role="line"
+         x="20.432312"
+         y="273.73538"
+         id="tspan2491">  . HorrorPen</tspan><tspan
+         sodipodi:role="line"
+         x="20.432312"
+         y="298.99155"
+         id="tspan2493" /><tspan
+         sodipodi:role="line"
+         x="20.432312"
+         y="324.24768"
+         id="tspan2495">Thanks:</tspan><tspan
+         sodipodi:role="line"
+         x="20.432312"
+         y="349.50381"
+         id="tspan2497">  .OpenGameArt</tspan></text>
     <g
        id="g3571"
        transform="translate(0,-9.0619656)">
@@ -557,20 +573,6 @@
          id="tspan2534"
          x="381.77902"
          y="454.35895">G</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-size:21.69905853px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Arial Black;-inkscape-font-specification:Arial Black"
-       x="257.91293"
-       y="45.298378"
-       id="text2405-3"><tspan
-         sodipodi:role="line"
-         x="257.91293"
-         y="45.298378"
-         id="tspan3102-3">Thanks:</tspan><tspan
-         sodipodi:role="line"
-         x="257.91293"
-         y="72.422203"
-         id="tspan3197">  .OpenGameArt</tspan></text>
     <rect
        style="fill:#323232;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
        id="rect4719-8"

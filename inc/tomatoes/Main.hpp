@@ -50,11 +50,12 @@ private:
     int                         playerId[2];                    // The player id
     int                         level;                          // The current level
     const int                   nbLevels;                       // The number of level
+    bool                        cont;                           // The game continue
 
 
 public:
     Tomatoes():
-        screenDepth(32), settings("tomatoes"), menu(this), game(0), twoPlayers(false), nbLevels(1)
+        screenDepth(32), settings("tomatoes"), menu(this), game(0), twoPlayers(false), nbLevels(1), cont(true)
     {
         screenSize[0] = 480;
         screenSize[1] = 640;
@@ -74,8 +75,8 @@ public:
     int                         getLevel() const            { return level; }
     void                        setMulti(bool _value)       { twoPlayers = _value; }
     void                        setPlayerId(int _p, int _v) { if ((_p==1)||(_p==0)) { playerId[_p]=_v; } }
-    void                        resetLevel()                { level = 0; }
-    bool                        incLevel()                  { return (level++<nbLevels); }
+    void                        resetLevel()                { cont = true; level = 0; }
+    bool                        incLevel()                  { return (level++<nbLevels && cont); }
 
     void                        createGame(int _level = 1);
     bool                        launchGame();

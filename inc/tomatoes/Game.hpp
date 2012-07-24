@@ -23,6 +23,11 @@ TOMATOES.  If not, see http://www.gnu.org/licenses/
 
 #include <list>
 
+namespace libconfig
+{
+class Config;
+}
+
 namespace splashouille
 {
 class Animation;
@@ -47,6 +52,7 @@ private:
         level0              = 0,                // NOT INTERACTIVE LEVEL
         level1              = 10,               // INSERT THE AIRCRAFTS
         level2              = 20,               // PLAY
+        level3              = 30,               // GAMEOVER : RETURN TO THE MENU
         last                = 200
     } state;
 
@@ -108,7 +114,7 @@ private:
     } bullet;
 
     typedef void (Game::*p_onFrame)(int _frame, int _timeStampInMilliSeconds);
-    typedef void (Game::*p_fire)(int _ts, float _left, float _top);
+    typedef void (Game::*p_fire)(int _ts, float _left, float _top, int _player);
     typedef void (Game::*p_bullet)(int _ts, float _left, float _top);
 
 public:
@@ -155,6 +161,7 @@ public:
         static const Model  models[nbModels];
     private:
         Game *                  parent;                             // The game parent
+        int                     id;                                 // The player id
         splashouille::Object *  object;                             // The splashouille sprite
         int                     model;                              // The player model
         int                     timestamp;                          // The last compute timestamp;
@@ -163,31 +170,41 @@ public:
         int                     lastBulletTs;                       // The last bullet timestamp
         int                     lastHit;                            // The last hit timestamp
         float                   speed[2];                           // The current speed
+        int                     score;                              // The player score
     public:
-        Player(): parent(0), object(0), timestamp(0), level(0), lastBulletTs(0), lastHit(0) { speed[0] = speed[1] = 0; }
+        Player(): parent(0), object(0), timestamp(0), level(0), lastBulletTs(0), lastHit(0), score(0) { speed[0] = speed[1] = 0; }
         void init(Game * _parent, int _ts, int _playerId, int _model, bool _multi);
         void update(int _ts, bool _up, bool _right, bool _down, bool _left, bool _fire);
         void getPosition(float &_x, float &_y);
         void addSpeed(float _x, float _y);
         bool hit(int _ts, int _value);
+        int getLife() { return (life>0)?life:0; }
         const Model& getModel() { return models[model]; }
         bool isAlive() { return (life>0); }
         void levelUp() { if (level<2) { level++; } }
+        void setId(int _id) { id = _id; }
+        void incScore() { score++; }
+        int getScore() { return score; }
+        splashouille::Object * getObject() { return object; }
     };
 
 private:
     Tomatoes *                  tomatoes;                           // The tomatoes parent
+    libconfig::Config *         configuration;                      // The configuration level
     splashouille::Engine *      engine;                             // The menu splashouille engine
     splashouille::Animation *   a_shoots;                           // Players bullets animation
     splashouille::Animation *   a_ennemies;                         // The tomatoes ennemies
     splashouille::Animation *   a_bullets;                          // The tomatoes bullets
     splashouille::Animation *   a_effects;                          // The effects animation
+    splashouille::Object *      o_score[2][4];                      // The scores images
+    splashouille::Object *      o_heart[2][4];                      // The life images
     p_onFrame                   onFrameMethods[last];               // onFrame callbacks regarding the state
     p_fire                      fireMethods[Player::lastfire*100];  // fire methods
     p_bullet                    bulletMethods[lastbullet];          // bullet methods
     Player                      players[2];                         // The players
     unsigned int                bulletId;                           // An bullets counter
     int                         currentTs;                          // The current timestamp
+    bool                        lastEnnemy;                         // The last ennemy is destroyed
 
     std::list<splashouille::Object*>    alliesToDelete;             // The players bullets to delete
     std::list<splashouille::Object*>    ennemiesToDelete;           // The ennemies tomatoes to delete
@@ -195,22 +212,30 @@ private:
     std::list<splashouille::Object*>    effectsToDelete;            // The effects to delete
     std::list<splashouille::Object*>    alliesArray[10][10];        // The players bullets array
 
+    splashouille::Engine *      getEngine() { return engine; }
+
+    /** Update methods */
+    void                        updateHeart(int _player, int _life);
+    void                        updateScore(int _player, int _score);
+
     /** Menu event handling */
     void                        onLevel1 (int _frame, int _timeStampInMilliSeconds);
     void                        onLevel2 (int _frame, int _timeStampInMilliSeconds);
+    void                        onLevel3 (int _frame, int _timeStampInMilliSeconds);
 
     /** Fire methods */
     int                         getFireId(Player::fire _fireType, int _level) { return _fireType*100+_level; }
-    void                        bullet01 (int _ts, float _left, float _top, const std::string & _fashion, int _positionY, int _power = 10);
-    void                        trident0 (int _ts, float _left, float _top);
-    void                        trident1 (int _ts, float _left, float _top);
-    void                        trident2 (int _ts, float _left, float _top);
-    void                        gunshot0 (int _ts, float _left, float _top);
-    void                        gunshot1 (int _ts, float _left, float _top);
-    void                        gunshot2 (int _ts, float _left, float _top);
-    void                        laser0 (int _ts, float _left, float _top);
-    void                        laser1 (int _ts, float _left, float _top);
-    void                        laser2 (int _ts, float _left, float _top);
+    void                        bullet01 (int _ts, float _left, float _top, const std::string & _fashion,
+                                          int _positionY, int _player, int _power = 10);
+    void                        trident0 (int _ts, float _left, float _top, int _player);
+    void                        trident1 (int _ts, float _left, float _top, int _player);
+    void                        trident2 (int _ts, float _left, float _top, int _player);
+    void                        gunshot0 (int _ts, float _left, float _top, int _player);
+    void                        gunshot1 (int _ts, float _left, float _top, int _player);
+    void                        gunshot2 (int _ts, float _left, float _top, int _player);
+    void                        laser0 (int _ts, float _left, float _top, int _player);
+    void                        laser1 (int _ts, float _left, float _top, int _player);
+    void                        laser2 (int _ts, float _left, float _top, int _player);
 
     /** Ennemies bullet methods */
     void                        bullet02(int _ts, float _left, float _top, const std::string & _fashion);
@@ -260,10 +285,20 @@ private:
 
 
 public:
-    Game(Tomatoes * _tomatoes):tomatoes(_tomatoes), engine(0), bulletId(0), currentTs(0) {}
+    Game(Tomatoes * _tomatoes):tomatoes(_tomatoes), engine(0), bulletId(0), currentTs(0), lastEnnemy(false)
+    {
+        players[0].setId(0); players[1].setId(1);
+    }
+    ~Game();
+
+    /** accessors */
+    bool getLastEnnemy() { return lastEnnemy; }
 
     /** Init the game */
     void init(int _level);
+
+    /** @return true if one player is still alive */
+    bool isAlive();
 
     /** Is ready */
     bool isReady() { return engine->getProgress()==100; }
@@ -272,7 +307,7 @@ public:
     void run(SDL_Surface * _screen);
 
     /** Fire bullets */
-    void fire(int _ts, float _left, float _top, Player::fire _fireType, int _level);
+    void fire(int _ts, float _left, float _top, Player::fire _fireType, int _level, int _player);
 
     /** Crowd callback */
     bool onObject(splashouille::Object * _object, int _user);

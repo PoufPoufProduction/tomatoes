@@ -364,6 +364,7 @@ void Menu::onLevel3(int _frame UNUSED, int _timeStampInMilliSeconds UNUSED)
         else
         {
             // FINISHED
+            engine->changeTimeline("t_menu");
         }
     }
 

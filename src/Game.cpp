@@ -31,17 +31,19 @@ TOMATOES.  If not, see http://www.gnu.org/licenses/
 #include <iostream>
 #include <sstream>
 
+#define PLAYERRADIUS2   36
+
 using namespace tomatoes;
 
 /** The 3 airships models */
 const Game::Player::Model  Game::Player::models[Game::nbModels] = {
-        Game::Player::Model(1000,200,300,10,trident,4,20,20,"_gnu"),
-        Game::Player::Model(700,200,200,20,laser,5,40,20,"_tux"),
-        Game::Player::Model(1500,500,350,5,gunshot,3,30,20,"_fox") };
+        Game::Player::Model(1000,200,300,10,trident,3,20,20,"_gnu"),
+        Game::Player::Model(700,200,200,20,laser,4,40,20,"_tux"),
+        Game::Player::Model(1500,500,350,5,gunshot,2,30,20,"_fox") };
 
 /** The delay between two fires regarding the fire type and the player level */
 const int Game::Player::delayFire[Game::Player::lastfire][Game::Player::nbMaxLevels] = {
-        { 100, 65, 40}, { 100, 100, 100}, { 100, 100, 100}  };
+        { 100, 50, 25}, { 100, 100, 100}, { 100, 100, 100}  };
 
 /**
  * Init a player
@@ -142,7 +144,7 @@ void Game::Player::update(int _ts, bool _up, bool _right, bool _down, bool _left
         // FIRE SOME BULLETS ?
         if (_fire && _ts-lastBulletTs>delayFire[models[model].fireType][level])
         {
-            parent->fire(_ts, left,top, models[model].fireType, level);
+            parent->fire(_ts, left,top, models[model].fireType, level, id);
             lastBulletTs = _ts;
         }
     }
@@ -161,30 +163,57 @@ bool Game::Player::hit(int _ts, int _value)
         if (life<=0)
         {
             object->changeFashion("outro");
+
+            splashouille::Object * sound = parent->getEngine()->getLibrary()->copyObject("_arrr", "arrr");
+            parent->getEngine()->getCrowd()->insertObject(_ts, sound);
+
+            if (!parent->isAlive())
+            {
+                parent->getEngine()->changeTimeline("outro");
+            }
         }
         lastHit = _ts;
     }
+
     return ret;
+}
+
+
+Game::~Game()
+{
+    delete configuration;
+}
+
+/** @return true if one player is still alive */
+bool Game::isAlive()
+{
+    bool rc = players[0].isAlive();
+    if (tomatoes->multi())
+    {
+        rc |= players[1].isAlive();
+    }
+    return rc;
 }
 
 /**
  * Initialize the game level
  * @param _level is the level id
  */
-void Game::init(int _level)
+void Game::init(int _level UNUSED)
 {
     bool rc = true;
 
     // CREATE AND CONFIGURE THE ENGINE
     engine = splashouille::Engine::createEngine();
 
-    libconfig::Config * configuration   = new libconfig::Config();
+    configuration   = new libconfig::Config();
 
     try { configuration->readFile("res/conf/levels/level01.ini"); }
         catch(libconfig::FileIOException e) { std::cerr<<e.what()<<std::endl; rc = false; }
         catch(libconfig::ParseException  e) { std::cerr<<e.what()<<std::endl; rc = false; }
 
     if (rc) { rc = engine->import(configuration, true); }
+
 }
 
 /**
@@ -199,10 +228,28 @@ void Game::run(SDL_Surface * _screen)
     a_bullets           = engine->getLibrary()->getAnimationById("a_bullets");
     a_effects           = engine->getLibrary()->getAnimationById("a_effects");
 
+    o_score[0][0]       = engine->getLibrary()->getObjectById("score00");
+    o_score[0][1]       = engine->getLibrary()->getObjectById("score01");
+    o_score[0][2]       = engine->getLibrary()->getObjectById("score02");
+    o_score[0][3]       = engine->getLibrary()->getObjectById("score03");
+    o_score[1][0]       = engine->getLibrary()->getObjectById("score10");
+    o_score[1][1]       = engine->getLibrary()->getObjectById("score11");
+    o_score[1][2]       = engine->getLibrary()->getObjectById("score12");
+    o_score[1][3]       = engine->getLibrary()->getObjectById("score13");
+    o_heart[0][0]       = engine->getLibrary()->getObjectById("heart00");
+    o_heart[0][1]       = engine->getLibrary()->getObjectById("heart01");
+    o_heart[0][2]       = engine->getLibrary()->getObjectById("heart02");
+    o_heart[0][3]       = engine->getLibrary()->getObjectById("heart03");
+    o_heart[1][0]       = engine->getLibrary()->getObjectById("heart10");
+    o_heart[1][1]       = engine->getLibrary()->getObjectById("heart11");
+    o_heart[1][2]       = engine->getLibrary()->getObjectById("heart12");
+    o_heart[1][3]       = engine->getLibrary()->getObjectById("heart13");
+
     // HANDLE CALLBACKS
     for (int i=0; i<last; i++) { onFrameMethods[i] = 0; }
     onFrameMethods[level1]      = &Game::onLevel1;
     onFrameMethods[level2]      = &Game::onLevel2;
+    onFrameMethods[level3]      = &Game::onLevel3;
 
     // HANDLE FIRE
     for (int i=0; i<Player::lastfire*100; i++) { fireMethods[i] = 0; }
@@ -263,7 +310,8 @@ void Game::run(SDL_Surface * _screen)
     bulletMethods[midcross16]   = &Game::bulletMidCross16;
 
     engine->addListener(this);
-    engine->setFPS(600);
+    engine->setFPS(60);
+    //engine->setDebug(true);
 
     // RUN THE ENGINE
     if (engine) { engine->run(_screen); }
@@ -273,10 +321,10 @@ void Game::run(SDL_Surface * _screen)
 }
 
 
-void Game::fire(int _ts, float _left, float _top, Player::fire _fireType, int _level)
+void Game::fire(int _ts, float _left, float _top, Player::fire _fireType, int _level, int _player)
 {
     p_fire  method = fireMethods[getFireId(_fireType, _level)];
-    if (method) { (*this.*method)(_ts, _left, _top); }
+    if (method) { (*this.*method)(_ts, _left, _top, _player); }
 }
 
 
@@ -286,11 +334,13 @@ void Game::fire(int _ts, float _left, float _top, Player::fire _fireType, int _l
  * @param _frameSec is the number of frames played during the last second
  * @param _second is the current second
  */
-void Game::onSecond(int _frame, int _frameSec, int _second)
+void Game::onSecond(int _frame UNUSED, int _frameSec UNUSED, int _second UNUSED)
 {
+/*
 std::cout<<"["<<_frame<<"|"<<_second<<"] (fps:"<<_frameSec<<") ("<<a_shoots->getCrowd()->getSize()<<"|"<<
     a_ennemies->getCrowd()->getSize()<<"|"<<a_bullets->getCrowd()->getSize()<<"|"<<
     a_effects->getCrowd()->getSize()<<") ("<<engine->getLibrary()->getSize()<<")"<<std::endl;
+*/
 }
 
 /**
@@ -326,11 +376,17 @@ void Game::onLevel1(int _frame UNUSED, int _timeStampInMilliSeconds)
     players[0].init(this, _timeStampInMilliSeconds, 0, tomatoes->getPlayerId(0), tomatoes->multi());
     players[1].init(this, _timeStampInMilliSeconds, 1, tomatoes->getPlayerId(1), tomatoes->multi());
 
+    for (int p=0; p<(tomatoes->multi()?2:1); p++)
+    {
+        o_score[p][3]->getStyle()->setDisplay(true);
+        for (int i=0; i<players[p].getModel().life; i++) { o_heart[p][3-i]->getStyle()->setDisplay(true); }
+    }
+
     engine->setState(0);
 }
 
 /**
- * Handle the level1 event
+ * Handle the level2 event
  * @param _event
  * @param _timeStampInMilliSeconds is the unused timestamp
  * @return true
@@ -387,30 +443,50 @@ void Game::onLevel2(int _frame UNUSED, int _timeStampInMilliSeconds)
         effectsToDelete.pop_front();
     }
 
-    // PLAYER KEYBOARD INTERACTION
-    Uint8 * keystates = tomatoes->getKeyboard().SDL_GetKeyStateLight(NULL);
-    players[0].update(  _timeStampInMilliSeconds,
-                        keystates[SDLK_UP], keystates[SDLK_RIGHT],keystates[SDLK_DOWN],keystates[SDLK_LEFT],
-                        keystates[' '] | keystates['l'] );
-
-    if (tomatoes->multi())
+    // IS LEVEL ENDED
+    if (lastEnnemy && a_bullets->getCrowd()->getSize()==0 && a_ennemies->getCrowd()->getSize()==0)
     {
-        players[1].update(  _timeStampInMilliSeconds,
-                            keystates['r'], keystates['g'],keystates['f'],keystates['d'],
-                            keystates['e'] );
+        players[0].getObject()->changeFashion("finish");
+        if (tomatoes->multi()) { players[1].getObject()->changeFashion("finish"); }
+        engine->changeTimeline("finish");
+    }
+    else
+    {
+        // PLAYER KEYBOARD INTERACTION
+        Uint8 * keystates = tomatoes->getKeyboard().SDL_GetKeyStateLight(NULL);
+        players[0].update(  _timeStampInMilliSeconds,
+                            keystates[SDLK_UP], keystates[SDLK_RIGHT],keystates[SDLK_DOWN],keystates[SDLK_LEFT],
+                            keystates[' '] | keystates['l'] );
 
-        // PLAYERS REBOUND
-        float p1[2], p2[2];
-        players[0].getPosition(p1[0], p1[1]);
-        players[1].getPosition(p2[0], p2[1]);
-        if ( (p1[0]-p2[0])*(p1[0]-p2[0]) + (p1[1]-p2[1])*(p1[1]-p2[1]) < 1024)
+        if (tomatoes->multi())
         {
-            players[0].addSpeed((p1[0]-p2[0])*(25-players[0].getModel().weight), (p1[1]-p2[1])*(25-players[0].getModel().weight));
-            players[1].addSpeed((p2[0]-p1[0])*(25-players[1].getModel().weight), (p2[1]-p1[1])*(25-players[1].getModel().weight));
+            players[1].update(  _timeStampInMilliSeconds,
+                                keystates['r'], keystates['g'],keystates['f'],keystates['d'],
+                                keystates['e'] );
+
+            // PLAYERS REBOUND
+            float p1[2], p2[2];
+            players[0].getPosition(p1[0], p1[1]);
+            players[1].getPosition(p2[0], p2[1]);
+            if ( (p1[0]-p2[0])*(p1[0]-p2[0]) + (p1[1]-p2[1])*(p1[1]-p2[1]) < 1024)
+            {
+                players[0].addSpeed((p1[0]-p2[0])*(25-players[0].getModel().weight), (p1[1]-p2[1])*(25-players[0].getModel().weight));
+                players[1].addSpeed((p2[0]-p1[0])*(25-players[1].getModel().weight), (p2[1]-p1[1])*(25-players[1].getModel().weight));
+            }
         }
     }
 }
 
+/**
+ * Handle the level3 event
+ * @param _event
+ * @param _timeStampInMilliSeconds is the unused timestamp
+ * @return true
+ */
+void Game::onLevel3(int _frame UNUSED, int _timeStampInMilliSeconds UNUSED)
+{
+    engine->stop();
+}
 
 /** Crowd callback */
 bool Game::onObject(splashouille::Object * _object, int _user)
@@ -479,10 +555,13 @@ bool Game::onObject(splashouille::Object * _object, int _user)
                     float radius2 = (width/2)*(width/2) + (widthShoot/2)*(widthShoot/2);
                     float dist2 = (top-topShoot)*(top-topShoot) + (left-leftShoot)*(left-leftShoot);
 
-                    if (shoot->getState()>0 && (dist2<radius2))
+                    int shootPower = shoot->getState()%1000;
+                    int shootPlayer = shoot->getState()/1000;
+
+                    if (shootPower>0 && (dist2<radius2))
                     {
                         // HANDLE THE SHOOT
-                        int loss = shoot->getState();
+                        int loss = shootPower;
                         if (loss>life) { loss = life; }
                         life -= loss;
                         shoot->setState(0);
@@ -492,6 +571,9 @@ bool Game::onObject(splashouille::Object * _object, int _user)
                         // DESTROY THE ENNEMY AND ADD THE EXPLOSION ANIMATION
                         if (life<=0)
                         {
+                            players[shootPlayer].incScore();
+                            updateScore(shootPlayer, players[shootPlayer].getScore());
+
                             ennemiesToDelete.push_back(_object);
                             char name[128]; snprintf(name, 128, "effect%05d", bulletId);
                             bulletId = (bulletId+1)%100000;
@@ -499,6 +581,9 @@ bool Game::onObject(splashouille::Object * _object, int _user)
                             object->getStyle()->setTop(top - object->getStyle()->getHeight()/2);
                             object->getStyle()->setLeft(left - object->getStyle()->getWidth()/2);
                             a_effects->getCrowd()->insertObject(currentTs, object);
+
+                            splashouille::Object * sound = engine->getLibrary()->copyObject("_explode", "explode");
+                            engine->getCrowd()->insertObject(currentTs, sound);
 
                             // EVENT
                             int event = (_object->getState()/1000)%10;
@@ -513,10 +598,9 @@ bool Game::onObject(splashouille::Object * _object, int _user)
                                 a_effects->getCrowd()->insertObject(currentTs, object);
                             }
                             else
-                            if (event == 5)
-                            {
-                                bulletCross32(currentTs, left, top);
-                            }
+                            if (event == 3) { lastEnnemy = true; } else
+                            if (event == 5) { bulletCross16(currentTs, left, top); } else
+                            if (event == 6) { bulletCross32(currentTs, left, top); }
                         }
                     }
                 }
@@ -527,7 +611,7 @@ bool Game::onObject(splashouille::Object * _object, int _user)
             {
                 float p[2]; players[i].getPosition(p[0], p[1]);
 
-                float radius2 = (width/2)*(width/2) + (64);
+                float radius2 = (width/2)*(width/2) + PLAYERRADIUS2;
                 float dist2 = (top-p[1])*(top-p[1]) + (left-p[0])*(left-p[0]);
                 if (dist2<radius2)
                 {
@@ -543,7 +627,8 @@ bool Game::onObject(splashouille::Object * _object, int _user)
 
                     if (players[i].hit(currentTs, 100))
                     {
-                        name[128]; snprintf(name, 128, "effect%05d", bulletId);
+                        updateHeart(i, players[i].getLife());
+                        snprintf(name, 128, "effect%05d", bulletId);
                         bulletId = (bulletId+1)%100000;
                         splashouille::Object * object = engine->getLibrary()->copyObject("_bam", name);
                         object->getStyle()->setTop(p[1] - object->getStyle()->getHeight()/2 - 10);
@@ -574,13 +659,14 @@ bool Game::onObject(splashouille::Object * _object, int _user)
                 top+=height/2; left+=width/2;
                 float p[2]; players[i].getPosition(p[0], p[1]);
 
-                float radius2 = (width/2)*(width/2) + (64);
+                float radius2 = (width/2)*(width/2) + PLAYERRADIUS2;
                 float dist2 = (top-p[1])*(top-p[1]) + (left-p[0])*(left-p[0]);
                 if (dist2<radius2)
                 {
                     bulletsToDelete.push_back(_object);
                     if (players[i].hit(currentTs, 1))
                     {
+                        updateHeart(i, players[i].getLife());
                         char name[128]; snprintf(name, 128, "effect%05d", bulletId);
                         bulletId = (bulletId+1)%100000;
                         splashouille::Object * object = engine->getLibrary()->copyObject("_bam", name);
@@ -624,8 +710,32 @@ bool Game::onObject(splashouille::Object * _object, int _user)
     return true;
 }
 
+void Game::updateHeart(int _player, int _life)
+{
+    for (int i=0; i<4; i++)
+    {
+        o_heart[_player][i]->changeFashion((i>=(4-_life))?"good":"empty");
+    }
+}
 
-void Game::bullet01 (int _ts, float _left, float _top, const std::string & _fashion, int _positionY, int _power)
+void Game::updateScore(int _player, int _score)
+{
+    for (int i=0; i<4; i++)
+    {
+        if (_score || !i)
+        {
+            o_score[_player][3-i]->getStyle()->setDisplay(true);
+            o_score[_player][3-i]->getStyle()->setPosition(32*(_score%10), 0);
+            _score=_score/10;
+        }
+        else
+        {
+            o_score[_player][3-i]->getStyle()->setDisplay(false);
+        }
+    }
+}
+
+void Game::bullet01 (int _ts, float _left, float _top, const std::string & _fashion, int _positionY, int _player, int _power)
 {
     char name[128]; snprintf(name, 128, "bullet%05d", bulletId);
     bulletId = (bulletId+1)%100000;
@@ -634,52 +744,52 @@ void Game::bullet01 (int _ts, float _left, float _top, const std::string & _fash
     object->getStyle()->setLeft(_left);
     object->getStyle()->setPositionY(_positionY);
     object->changeFashion(_fashion);
-    object->setState(_power);
+    object->setState(_power + _player * 1000);
     a_shoots->getCrowd()->insertObject(_ts, object);
 }
 
-void Game::trident0 (int _ts, float _left, float _top)
+void Game::trident0 (int _ts, float _left, float _top, int _player)
 {
-    bullet01(_ts, _left+50, _top+20, "n2", 32);
+    bullet01(_ts, _left+50, _top+20, "n2", 32, _player);
 }
 
-void Game::trident1 (int _ts, float _left, float _top)
+void Game::trident1 (int _ts, float _left, float _top, int _player)
 {
-    bullet01(_ts, _left+65, _top+20, "n2", 32);
-    bullet01(_ts, _left+35, _top+20, "n2", 32);
+    bullet01(_ts, _left+65, _top+20, "n2", 32, _player);
+    bullet01(_ts, _left+35, _top+20, "n2", 32, _player);
 }
 
-void Game::trident2 (int _ts, float _left, float _top)
+void Game::trident2 (int _ts, float _left, float _top, int _player)
 {
-    bullet01(_ts, _left+65, _top+20, "n2", 32);
-    bullet01(_ts, _left+35, _top+20, "n2", 32);
-    bullet01(_ts, _left+70, _top+20, "nne2", 32);
-    bullet01(_ts, _left+30, _top+20, "nnw2", 32);
+    bullet01(_ts, _left+65, _top+20, "n2", 32, _player);
+    bullet01(_ts, _left+35, _top+20, "n2", 32, _player);
+    bullet01(_ts, _left+70, _top+20, "nne2", 32, _player);
+    bullet01(_ts, _left+30, _top+20, "nnw2", 32, _player);
 }
 
-void Game::gunshot0 (int _ts, float _left, float _top)
+void Game::gunshot0 (int _ts, float _left, float _top, int _player)
 {
-    bullet01(_ts, _left+50, _top+20, "n2", 16);
+    bullet01(_ts, _left+50, _top+20, "n2", 16, _player);
 }
-void Game::gunshot1 (int _ts, float _left, float _top)
+void Game::gunshot1 (int _ts, float _left, float _top, int _player)
 {
-    bullet01(_ts, _left+25+(rand()%54), _top+20, "n2", 16);
+    bullet01(_ts, _left+25+(rand()%54), _top+20, "n2", 16, _player, 12);
 }
-void Game::gunshot2 (int _ts, float _left, float _top)
+void Game::gunshot2 (int _ts, float _left, float _top, int _player)
 {
-    bullet01(_ts, _left+(rand()%104), _top+20, "n2", 16);
+    bullet01(_ts, _left+(rand()%104), _top+20, "n2", 16, _player, 14);
 }
-void Game::laser0 (int _ts, float _left, float _top)
+void Game::laser0 (int _ts, float _left, float _top, int _player)
 {
-    bullet01(_ts, _left+50, _top+20, "n2", 48);
+    bullet01(_ts, _left+50, _top+20, "n2", 48, _player);
 }
-void Game::laser1 (int _ts, float _left, float _top)
+void Game::laser1 (int _ts, float _left, float _top, int _player)
 {
-    bullet01(_ts, _left+50, _top+20, "n2", 48, 25);
+    bullet01(_ts, _left+50, _top+20, "n2", 48, _player, 20);
 }
-void Game::laser2 (int _ts, float _left, float _top)
+void Game::laser2 (int _ts, float _left, float _top, int _player)
 {
-    bullet01(_ts, _left+50, _top+20, "n2", 48, 60);
+    bullet01(_ts, _left+50, _top+20, "n2", 48, _player, 40);
 }
 
 void Game::bullet02(int _ts, float _left, float _top, const std::string & _fashion)

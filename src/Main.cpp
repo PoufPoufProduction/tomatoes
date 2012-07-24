@@ -83,7 +83,13 @@ bool Tomatoes::launchGame()
 {
     bool rc = (game);
 
-    if (rc) { game->run(screen); delete game; }
+    if (rc)
+    {
+        game->run(screen);
+        cont = game->getLastEnnemy();
+        delete game;
+        game = 0;
+    }
 
     return rc;
 }
