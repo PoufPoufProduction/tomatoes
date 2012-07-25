@@ -292,7 +292,7 @@ void Menu::onLevel2(int _frame UNUSED, int _timeStampInMilliSeconds UNUSED)
         // FIRST PLAYER
         if (!playerReady[0])
         {
-            if (keystates['l']) { playerReady[0] = true; a_player[0]->changeTimeline("ready"); }
+            if (keystates['l'] || keystates[' ']) { playerReady[0] = true; a_player[0]->changeTimeline("ready"); }
 
             int     v1 = tomatoes->getPlayerId(0);
             bool    m1 = false;
