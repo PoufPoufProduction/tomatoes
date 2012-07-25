@@ -23,14 +23,14 @@ Email     johannc@poufpoufproduction.fr
 DEPENDENCIES
 ============
 
-To buil 'GNU Versus zombie rotten tomatoes', you need the 1.2 Development Libraries for SDL, SLD_image and SDL_mixer.
+To build 'GNU Versus zombie rotten tomatoes', you need the 1.2 Development Libraries for SDL, SLD_image and SDL_mixer.
 You also need the libconfig version 9.0.
 You need to compile and install splashouille first.
 
 BUILDING 'GNU Versus zombie rotten tomatoes'
 ============================================
 
-Once you compile and install splashouille, go to the titrus directory and run the command :
+Once you compile and install splashouille, go to the tomatoes/ directory and run the command :
 
        make
 
