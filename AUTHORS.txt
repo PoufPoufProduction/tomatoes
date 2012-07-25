@@ -1,0 +1,24 @@
+Code authors
+============
+
+This program was written by the following people:
+ - Johann C.
+
+
+Asset attribution
+=================
+
+Assets were authored by the following people:
+
+Johann C.
+ - all graphics excepts farming tilesets
+
+Daniel Eddeland
+ - farming tilesets
+
+HorrorPen
+ - music from menu
+
+Alexandr Zhelanov
+ - level 1 sound track
+
